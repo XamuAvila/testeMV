@@ -18,7 +18,7 @@ export class LetterController {
     const users: User[] = await this._userService.getUsers();
     const posts: Post[] = await this._postService.getPosts();
     const user = users.filter(user => user.id === userId);
-    if (!user) return null;
+    if (!user.length) return null;
     return this.organizeUsersAndPosts(user, posts);
   }
 

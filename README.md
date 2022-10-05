@@ -2,8 +2,11 @@
 
 ## Yarn install
 
+## yarn dev
+
 - .env com secret key para evitar trabalho
 - Caso queira mudar as portas, adicionar no .env as variáveis
+- Porta padrão: 3000
 -       **APP_PORT**
 -       **NODE_ENV**
 
