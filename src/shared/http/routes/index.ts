@@ -1,8 +1,12 @@
 import { Router, Request, Response } from "express";
-
+import { authenticateToken } from "../../../middleware/authenticationMiddleware";
+const login = require('./login/login.route')
+const letter = require('./letter/letter.route')
 const routes = Router();
 
-routes.get('/', (request: Request, response: Response) => {
+routes.use(login);
+routes.use(letter);
+routes.get('/', authenticateToken, (request: Request, response: Response) => {
   return response.json({ message: "Hello dev!" })
 })
 
