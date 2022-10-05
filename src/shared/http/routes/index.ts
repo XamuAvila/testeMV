@@ -6,9 +6,5 @@ const routes = Router();
 
 routes.use(login);
 routes.use(letter);
-routes.get('/', authenticateToken, (request: Request, response: Response) => {
-  return response.json({ message: "Hello dev!" })
-})
-
 
 export default routes;

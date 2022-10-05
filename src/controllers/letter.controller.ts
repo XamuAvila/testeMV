@@ -1,12 +1,30 @@
-import axios from 'axios';
+import { UserService } from './../services/user.service';
 import { Letter, Order } from '../entities/letter.entity';
 import { Post } from '../entities/post.entity';
 import { Address, User } from '../entities/user.entity';
-
+import { PostService } from '../services/post.service';
+import { Container } from 'typedi';
 export class LetterController {
+
+  public _userService: UserService;
+  public _postService: PostService
+
+  constructor() {
+    this._userService = Container.get(UserService);
+    this._postService = Container.get(PostService);
+  }
+
+  public async getLetterByUserId(userId: number): Promise<Letter | null> {
+    const users: User[] = await this._userService.getUsers();
+    const posts: Post[] = await this._postService.getPosts();
+    const user = users.filter(user => user.id === userId);
+    if (!user) return null;
+    return this.organizeUsersAndPosts(user, posts);
+  }
+
   public async getLetters(): Promise<Letter> {
-    const users: User[] = await this.getUsers();
-    const posts: Post[] = await this.getPosts();
+    const users: User[] = await this._userService.getUsers();
+    const posts: Post[] = await this._postService.getPosts();
     return this.organizeUsersAndPosts(users, posts);
   }
 
@@ -46,30 +64,5 @@ export class LetterController {
 
   private formatAddress(address: Address): string {
     return `${address.street}, ${address.suite} - ${address.zipcode} ${address.city}`
-  }
-
-  private async getUsers(): Promise<User[]> {
-    const usersRequest = await axios.get<User[]>(
-      'https://jsonplaceholder.typicode.com/users',
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    );
-    return usersRequest.data;
-  }
-
-  private async getPosts(): Promise<Post[]> {
-    const postsRequest = await axios.get<Post[]>(
-      'https://jsonplaceholder.typicode.com/posts',
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    );
-
-    return postsRequest.data;
   }
 }
